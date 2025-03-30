@@ -1,10 +1,9 @@
 import sqlite3
 
-# Connect to database (or create it if it doesn't exist)
 conn = sqlite3.connect("fitness_tracker.db")
 cursor = conn.cursor()
 
-# Create a table to store user details
+#  table to store user details
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,7 +15,7 @@ cursor.execute('''
     )
 ''')
 
-# Create a table to store fitness records
+# table to store fitness records
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS fitness_data (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
