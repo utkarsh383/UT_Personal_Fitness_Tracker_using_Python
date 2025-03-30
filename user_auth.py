@@ -1,6 +1,5 @@
 import sqlite3
 
-# Function to register a new user
 def register_user(name, age, height, weight, gender):
     conn = sqlite3.connect("fitness_tracker.db")
     cursor = conn.cursor()
@@ -12,7 +11,7 @@ def register_user(name, age, height, weight, gender):
     conn.close()
     print("User registered successfully!")
 
-# Function to check if a user exists
+# check if a user exists
 def check_user(name):
     conn = sqlite3.connect("fitness_tracker.db")
     cursor = conn.cursor()
@@ -21,14 +20,12 @@ def check_user(name):
     user = cursor.fetchone()
 
     conn.close()
-    return user  # Returns user data if found, otherwise None
+    return user  
 
-# Function to log fitness data
 def log_fitness_data(user_name, date, steps, calories_burned, heart_rate):
     conn = sqlite3.connect("fitness_tracker.db")
     cursor = conn.cursor()
 
-    # Get user ID from name
     cursor.execute("SELECT id FROM users WHERE name = ?", (user_name,))
     user = cursor.fetchone()
 
@@ -38,12 +35,11 @@ def log_fitness_data(user_name, date, steps, calories_burned, heart_rate):
                        (user_id, date, steps, calories_burned, heart_rate))
         conn.commit()
         conn.close()
-        return True  # Data successfully logged
+        return True  
     else:
         conn.close()
-        return False  # User not found
+        return False 
 
-# Function to retrieve fitness data for a user
 def get_fitness_data(user_name):
     conn = sqlite3.connect("fitness_tracker.db")
     cursor = conn.cursor()
@@ -58,4 +54,4 @@ def get_fitness_data(user_name):
 
     records = cursor.fetchall()
     conn.close()
-    return records  # Returns a list of tuples with fitness data
+    return records  
