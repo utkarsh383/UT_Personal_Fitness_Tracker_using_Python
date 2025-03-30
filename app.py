@@ -8,17 +8,16 @@ import numpy as np
 import base64
 
 
-# Helper function to convert image to base64
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
 
-# Load the trained model and encoders
+# Load the trained model
 with open("fitness_model.pkl", "rb") as f:
     model, scaler, label_encoders = pickle.load(f)
 
-# Custom CSS for modern look and card styling
+# Custom CSS
 st.markdown(
     """
     <style>
@@ -62,7 +61,7 @@ st.markdown(
 st.sidebar.title("🔍 Navigation")
 page = st.sidebar.radio("Go to", ["🏠 Home", "📋 Register", "🧘 Yoga Tips"])
 
-# ==================== Exercise Database for Personalized Plans ====================
+# Exercise Database for Personalized Plans 
 EXERCISES = {
     "Beginner": [
         {"icon": "jumping-jacks.png", "name": "Jumping Jacks", "duration": "5 minutes",
@@ -108,7 +107,7 @@ EXERCISES = {
     ]
 }
 
-# ==================== Home Page ====================
+#  Home Page 
 if page == "🏠 Home":
     st.title("🏋️ Personal Fitness Tracker")
     st.write("Welcome! Please log in or register to calculate your BMI, view your fitness summary, and generate a personalized exercise plan.")
@@ -125,19 +124,17 @@ if page == "🏠 Home":
             else:
                 st.error("User not found. Please register first.")
     else:
-        # If user is logged in, display a welcome message and pre-fill details
         user = st.session_state.logged_in_user
-        st.success(f"Welcome back, {user[1]}!")  # Assuming user[1] is the name
+        st.success(f"Welcome back, {user[1]}!")  
 
-    # Personal Details Section: If not logged in, allow manual entry; if logged in, pre-fill from session_state.
+
     st.header("Your Personal Details")
     col1, col2 = st.columns(2)
     with col1:
-        # If logged in, pre-fill name, age, gender; otherwise, use empty input fields.
         if "logged_in_user" in st.session_state:
             name = user[1]
-            age = user[2]  # Adjust index as per your database schema
-            gender = user[5]  # Adjust index as needed
+            age = user[2]  
+            gender = user[5]  
             st.text_input("Name", value=name, key="name_filled")
             st.number_input("Age", min_value=1, max_value=100, value=age, key="age_filled")
             st.selectbox("Gender", ["Male", "Female", "Other"], index=["Male", "Female", "Other"].index(gender), key="gender_filled")
@@ -168,7 +165,7 @@ if page == "🏠 Home":
         exercise_duration = st.number_input("Enter exercise duration (minutes)", min_value=0, step=1)
     motivation = st.text_input("What motivates you to exercise?")
 
-    # Display a summary table with all details
+    # summary table with all details
     st.header("Your Fitness Summary")
     data = {
         "Name": [name],
@@ -183,7 +180,7 @@ if page == "🏠 Home":
     df = pd.DataFrame(data)
     st.table(df)
 
-    # Provide a fitness-level comment based on BMI
+    # fitness-level comment based on BMI
     if bmi:
         if bmi < 18.5:
             comment = "Underweight: Consider a balanced diet."
@@ -195,22 +192,19 @@ if page == "🏠 Home":
             comment = "Obese: Please consult a healthcare provider."
         st.write("**Fitness Level Comment:**", comment)
 
-    # ------------------ Personalized Exercise Plan Section ------------------
+    # Personalized Exercise Plan Section
     st.header("Create Your Personalized Exercise Plan")
     workout_days = st.number_input("How many days per week can you workout?", min_value=1, max_value=7, step=1)
     if st.button("Generate Exercise Plan"):
         st.subheader("Your Exercise Plan:")
 
-        # Ensure BMI is calculated
         if bmi is None:
             st.error("Please calculate your BMI first!")
         else:
-            # Use the trained model to predict the exercise type, then map to difficulty level
-            # Encode user inputs for prediction
+           
             gender_encoded = label_encoders["Gender"].transform([gender])[0]
             activity_encoded = label_encoders["Activity_Level"].transform([activity_option])[0]
 
-            # Prepare input data and scale it
             user_data = np.array([[age, weight, height, activity_encoded]])
             user_data_scaled = scaler.transform(user_data)
 
@@ -241,12 +235,11 @@ if page == "🏠 Home":
             }
             level = mapping.get(predicted_exercise, "Beginner")
             st.write(f"Based on your BMI, we've selected a **{level}** plan for you.")
-
-            # Get all exercises from the chosen level and shuffle the order
+            
             available = EXERCISES[level]
             random.shuffle(available)
 
-            # Display each exercise as a card with kcal information and an image embedded in HTML
+            # Display each exercise
             for exercise in available:
                 html = f"""
                 <div class="card" style="text-align: center;">
@@ -259,7 +252,7 @@ if page == "🏠 Home":
                 """
                 st.markdown(html, unsafe_allow_html=True)
 
-# ==================== Registration Page ====================
+# Registration Page
 elif page == "📋 Register":
     st.title("📝 User Registration")
     name = st.text_input("Full Name")
@@ -278,7 +271,7 @@ elif page == "📋 Register":
         else:
             st.error("⚠️ Please fill in all fields.")
 
-# ==================== Yoga Tips Page ====================
+#  Yoga Tips Page 
 elif page == "🧘 Yoga Tips":
     st.title("🧘 Yoga Tips and Poses")
     st.write("Explore these yoga poses to relax, improve flexibility, and boost your overall wellness.")
@@ -317,7 +310,7 @@ elif page == "🧘 Yoga Tips":
          "benefits": "Improves flexibility and relieves tension."}
     ]
 
-    # Display yoga poses in card layout using images embedded in HTML
+    # Display yoga poses
     for pose in yoga_poses:
         html = f"""
         <div class="card" style="text-align: center;">
