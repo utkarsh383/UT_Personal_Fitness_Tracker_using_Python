@@ -4,24 +4,19 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 import pickle
 
-# Load dataset
 df = pd.read_csv("fitness_dataset.csv")
 
-# Encode categorical columns
 label_encoders = {}
 for col in ['Gender', 'Activity_Level', 'Exercise_Type']:
     le = LabelEncoder()
     df[col] = le.fit_transform(df[col])
     label_encoders[col] = le
 
-# Select features and target variable
 X = df[['Age', 'Weight', 'Height', 'Activity_Level']]
 y = df['Exercise_Type']
 
-# Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Normalize the data
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
@@ -30,7 +25,6 @@ X_test = scaler.transform(X_test)
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# Save the trained model and encoders
 with open("fitness_model.pkl", "wb") as f:
     pickle.dump((model, scaler, label_encoders), f)
 
