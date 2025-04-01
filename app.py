@@ -311,10 +311,10 @@ elif page == "🧘 Yoga Tips":
     ]
 
     # Display yoga poses
-    for pose in yoga_poses:
+        for pose in yoga_poses:
         html = f"""
         <div class="card" style="text-align: center;">
-            <img src="data:image/png;base64,{get_base64_image('images/' + pose['image'])}" alt="{pose['name']}" class="yoga-icon">
+            <img src="data:image/png;base64,{get_base64_image('images/' + pose['image'])}" alt="{pose['name']}" class="yoga-icon" style="width: 240px; height: 240px;">
             <h3>{pose['name']}</h3>
             <p><strong>How to do it:</strong> {pose['instructions']}</p>
             <p><strong>Benefits:</strong> {pose['benefits']}</p>
